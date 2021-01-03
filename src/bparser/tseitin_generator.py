@@ -6,6 +6,7 @@ from datetime import datetime
 import os
 import csv
 import re
+import io
 
 
 class TseitinFormula:
@@ -319,6 +320,34 @@ class TseitinFormula:
                                          for i in formatted_clause_list]))
 
             file.write('\n'.join(map(str, clauses)))
+
+    def getCNF(self):
+        clauses_num = len(self.clauses)
+        terms_num = len(self.terms)
+
+        script_path = os.path.dirname(__file__)
+        os_sep = os.sep
+        path_list = script_path.split(os.sep)
+        script_directory = path_list[0:len(path_list) - 1]
+        clauses = []
+        for clause in self.clauses:
+            formatted_clause_list = []
+            for idx, term in enumerate(clause):
+                if term == -1:
+                    continue
+
+                term_id = self.terms[term] + 1
+                if idx > 0 and clause[idx - 1] == -1:
+                    term_id *= -1
+
+                formatted_clause_list.append(term_id)
+
+            formatted_clause_list.append(0)
+            clauses.append(" ".join([str(i)
+                                     for i in formatted_clause_list]))
+
+       # file.write('\n'.join(map(str, clauses)))
+        return ( terms_num,clauses_num,'\n'.join(map(str, clauses)))
 
     def solve(self, solver_name='m22', return_all_assignments=True, use_timer=True, interrupt_time=None):
         if self.debug:

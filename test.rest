@@ -1,0 +1,6 @@
+POST http://localhost:5000/
+Content-Type: application/json
+
+{"cnf":  "(a || b) && c || !(d && e)"}
+
+###
