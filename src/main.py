@@ -2,6 +2,7 @@ from bparser.boolparser import BooleanParser
 from bparser.tseitin_generator import TseitinFormula
 from flask import Flask, request
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
+from flask_cors import CORS
 
 def simple_tests():
     formulas = {
@@ -26,7 +27,7 @@ def simple_tests():
 
 
         # only for debug purposes
-        # print(formula.getSolverReport())
+        #  print(formula.getSolverReport())
         return (formula.getCNF())
 
 #
@@ -64,17 +65,21 @@ def simple_tests():
 
 app = Flask(__name__)
 api = Api(app)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 def getTseitinResponse(formula_value):
     formula = TseitinFormula(
         formula=formula_value, formula_format='string', export_to_cnf_file=False, debug=True, interrupt_time=4,
         return_all_assignments=True)
+    print(formula.getSolverReport())
 
-    terms, clauses, res = formula.getCNF()
+    terms, clauses, res, tseitinFormula, originalTermsCount, tseitinTermsCount = formula.getCNF()
     return {
-        "terms": terms,
         "clauses": clauses,
-        "dimacs": res
+        "dimacs": res,
+        "tseitinFormula": tseitinFormula,
+        "originalTermsCount": originalTermsCount,
+        "tseitinTermsCount": tseitinTermsCount
     }
 
 

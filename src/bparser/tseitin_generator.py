@@ -347,7 +347,18 @@ class TseitinFormula:
                                      for i in formatted_clause_list]))
 
        # file.write('\n'.join(map(str, clauses)))
-        return ( terms_num,clauses_num,'\n'.join(map(str, clauses)))
+        print(self.clause_map)
+        tseitin_formula = self.getTseitinFormulaStr(split=False)
+        original_terms_num = len(self.original_terms)
+        tseitin_terms_num = len(self.terms)
+        return ( terms_num,
+                 clauses_num,
+                 ' '.join(map(str, clauses)),
+                 tseitin_formula,
+                 original_terms_num,
+                 tseitin_terms_num
+                 #,     self.clause_map
+                 )
 
     def solve(self, solver_name='m22', return_all_assignments=True, use_timer=True, interrupt_time=None):
         if self.debug:
